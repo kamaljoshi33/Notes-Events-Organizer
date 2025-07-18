@@ -1,0 +1,51 @@
+version: '3.8' # Use a recent Docker Compose file format
+
+services:
+  frontend:
+    build:
+      context: ./todo # Path to your React app's directory (where Dockerfile is)
+      dockerfile: Dockerfile
+    ports:
+      - "80:80" # Map host machine's port 80 to container's port 80
+    depends_on:
+      - backend # Ensures the backend starts before the frontend
+    restart: unless-stopped # Always restart the container unless explicitly stopped
+
+  backend:
+    build:
+      context: ./Server # Path to your Node.js app's directory (where Dockerfile is)
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000" # Map host machine's port 5000 to container's port 5000
+    environment:
+      # Pass environment variables to the backend container.
+      # For production, consider using Docker Secrets for sensitive data.
+      PORT: 5000 # Make sure this matches the port your Node.js app listens on
+      # Example for database connection (adjust for your DB type)
+      # DATABASE_URL: "mongodb://database:27017/todoapp" # 'database' refers to the service name below
+      # JWT_SECRET: "your_jwt_secret_here" # For authentication
+    restart: unless-stopped
+    # If you add a database service, uncomment and add it here:
+    # depends_on:
+    #   - database
+
+  # --- Optional: Database Service (e.g., PostgreSQL or MongoDB) ---
+  # Uncomment this section if you want your database to also run in Docker
+  # database:
+  #   image: postgres:14-alpine # Or mongo:latest, mcr.microsoft.com/mssql/server:2019-latest
+  #   environment:
+  #     POSTGRES_DB: todoapp_db
+  #     POSTGRES_USER: user
+  #     POSTGRES_PASSWORD: password
+  #     # For SQL Server:
+  #     # ACCEPT_EULA: Y
+  #     # SA_PASSWORD: "YourStrong!Password"
+  #   ports:
+  #     - "5432:5432" # Or "27017:27017" for Mongo, "1433:1433" for SQL Server
+  #   volumes:
+  #     - db_data:/var/lib/postgresql/data # Persist data (IMPORTANT!)
+  #   restart: unless-stopped
+
+# Define volumes for persistent data (like database data)
+# volumes:
+#   db_data:
