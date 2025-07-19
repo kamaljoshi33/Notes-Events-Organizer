@@ -1,0 +1,8 @@
+# ... other ignores
+Client/.env  # Make sure this specific line is present
+Server/.env
+
+# ...
+
+
+
