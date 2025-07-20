@@ -1,32 +1,32 @@
-import React, { useState } from 'react';
-import { styled, alpha } from '@mui/material/styles'; // Import styled and alpha
 import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
 import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
+import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import InputBase from '@mui/material/InputBase';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import { alpha, styled } from '@mui/material/styles'; // Import styled and alpha
+import Toolbar from '@mui/material/Toolbar';
+import Tooltip from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
+import { useState } from 'react';
 
 // Icons
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
-import PersonAdd from '@mui/icons-material/PersonAdd';
-import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'; // For "New Note"
-import EventIcon from '@mui/icons-material/Event'; // For "Event"
 import DeleteIcon from '@mui/icons-material/Delete'; // For "Delete"
+import EventIcon from '@mui/icons-material/Event'; // For "Event"
+import Logout from '@mui/icons-material/Logout';
 import MailIcon from '@mui/icons-material/Mail'; // For "Mail"
+import MenuIcon from '@mui/icons-material/Menu';
+import PersonAdd from '@mui/icons-material/PersonAdd';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1'; // For "New User"
+import SearchIcon from '@mui/icons-material/Search';
+import Settings from '@mui/icons-material/Settings';
+import SimpleTextPage from './SimpleTextPage';
 
-// --- Styled Components for Search Bar (Copied from MUI AppBar examples) ---
-// This creates a styled div for the search input container
+
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
@@ -95,6 +95,10 @@ const Header = () => {
 console.log(e.target.value)
   }
 
+  const handleNewPage = ()=>{
+    <SimpleTextPage/>
+  }
+
   return (
     <Box sx={{ flexGrow: 1, marginBottom:'50vw'}}>
       <AppBar position="static">
@@ -122,7 +126,7 @@ console.log(e.target.value)
 
           {/* Navigation/Action Items (visible on larger screens) */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-end', alignItems: 'center', gap: 3 }}>
-            <MenuItem onClick={() => handleNavigationClick('/new-note')}>
+            <MenuItem onClick={handleNewPage}>
               <AddCircleOutlineIcon sx={{ mr: 0.5 }} />
               <Typography variant="body2" sx={{ fontWeight: 'bold' ,marginRight:'20vh'}}>NEW NOTE</Typography>
             </MenuItem>
@@ -145,9 +149,9 @@ console.log(e.target.value)
               <EventIcon sx={{ mr: 0.5 }} />
               <Typography variant="body2" sx={{ fontWeight: 'bold' }}>EVENT</Typography>
             </MenuItem>
-            <MenuItem onClick={() => handleNavigationClick('/users')}>
+            <MenuItem >
               <PersonAddAlt1Icon sx={{ mr: 0.5 }} />
-              <Typography variant="body2" sx={{ fontWeight: 'bold' }}>NEW USER</Typography>
+              <Typography  onClick={() => handleNavigationClick('/users')} variant="body2" sx={{ fontWeight: 'bold' }}>NEW USER</Typography>
             </MenuItem>
             <MenuItem onClick={() => handleNavigationClick('/delete')}>
               <DeleteIcon sx={{ mr: 0.5 }} />
