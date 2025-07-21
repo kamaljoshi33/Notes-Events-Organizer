@@ -3,11 +3,13 @@ const cors = require("cors")
 const app = express()
 app.use(cors())
 app.use(express.json());
-const PORT = 3001
-const config= require('./src/Config/index')
-const dbConnect = require('./src/Config/db')
+const config = require('./src/Config/index')
+const connectionDB = require('./src/Config/db');
+const PORT = config.port
 
-dbConnect()
+const userRoutes = require('./src/Routes/user')
+connectionDB()
+
 
 
 app.get('/',(req,res)=>{
@@ -44,5 +46,5 @@ app.post('/login',(req,res)=>{
 
 
 app.listen(PORT,()=>{
-    console.log(`app is running on ${config.port}`)
+    console.log(`app is running on ${PORT}`)
 })

@@ -1,6 +1,9 @@
 
+require('dotenv').config();
+
 module.exports = {
-  port: process.env.PORT || 3001,
-  jwtSecret: process.env.JWT_SECRET || 'supersecretjwtkey', // Fallback for development, but always use .env
-  mongoURI: process.env.MONGO_BD_URL || 'mongodb://localhost:27017/notes-events-organizer-db-dev', // Fallback
+  port: process.env.SERVER_PORT || 3001,
+  mongoURI: process.env.MONGO_BD_URL ,
+  jwtSecret: process.env.JWT_TOKEN ,
+  jwtExpiresIn: process.env.JWT_EXPIRES_IN || '1h',
 };
