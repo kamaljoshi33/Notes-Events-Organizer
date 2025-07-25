@@ -1,88 +1,49 @@
-const User = require('../Models/User')
-const jwt = require('jsonwebtoken')
-const config = require('../Config/index')
-const { register } = require('module')
+const mongooes = require('mongoose')
+const bcrypt = require('bcryptjs')
 
+const userSchema = new mongooes.Schema({
+    username:{
+        type : String,
+        require : [true, 'username is required'],
+        unique : true,
+        trim : true,
+        minlength : [3, 'Username must be at least 3 characters long']
 
-//Helper function to generate JWT
-const generateJWTToken = (id) => {
-    return jwt.sign({ id }), config.jwtSecret,{
-        expiresIn: config.jwtExpiresIn
+    },
+    email:{
+        type : String,
+        require : true,
+        unique : true,
+        trim : true,
+        lowercase :true
+    },
+    password:{
+        type : String,
+        require : [true, 'Password is required'],
+        minlength : [6, 'Password must be at least 6 characters long']
+    },
+    createdAt:{
+        type : Date,
+        createdAt : Date.now
     }
-}
+})
 
+// Pre-save hook to hash password before saving to database
 
-
-// register user
-
-exports.registerUSer = async () => {
-    const { username, password } = req.body;
-
-  
-  try {
-    // Check if user already exists
-    let user = await User.findOne({ username });
-    if (user) {
-      return res.status(400).json({ message: 'Username already exists' });
-    }
-    // Check if email already exists (if email is unique)
-    if (email) {
-      user = await User.findOne({ email });
-      if (user) {
-        return res.status(400).json({ message: 'Email already registered' });
-      }
-    }
-
-    // Create new user
-    user = await User.create({
-      username,
-      email,
-      password, // Password will be hashed by pre-save hook in model
-    });
-
-    res.status(201).json({
-      message: 'User registered successfully',
-      token: generateToken(user._id), // Send JWT back
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-      },
-    });
-  } catch (error) {
-    // Mongoose validation errors or other server errors
-    console.error('Registration error:', error);
-    res.status(500).json({ message: 'Server error during registration' });
-  }
-}
-
-exports.loginUser = async (req, res, next) => {
-  const { username, password } = req.body;
-
-  try {
-    // Check if user exists
-    const user = await TODOUSER.findOne({ username });
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+userSchema.pre('save', async function (next) {
+    if(!this.isModified('password')){
+        return next()  // Only hash if password was modified or is new
     }
 
-    // Check if password matches
-    const isMatch = await TODOUSER.matchPassword(password); // Using method defined in model
-    if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
-    }
+const salt = await bcrypt.genSalt(10)   // Generate salt
+this.password = await bcrypt.hash(this.password, salt) // Hash password
+next()
+});
 
-    res.status(200).json({
-      message: 'Logged in successfully',
-      token: generateToken(user._id), // Send JWT back
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-      },
-    });
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ message: 'Server error during login' });
-  }
+//method to compare password
+
+userSchema.method.matchPassword = async function (enterPassword) {
+    return await bcrypt.compare(enterPassword, this.password)
 };
+
+module.exports = mongooes.model('TODOUSER', userSchema)
